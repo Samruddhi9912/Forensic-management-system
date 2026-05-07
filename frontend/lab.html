@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Terminal | Noir System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --card-bg: #0a0a0a;
+            --border: #222222;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --accent: #ffffff;
+            --btn-ghost: #bbbbbb;
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text-primary); 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 40px; 
+            line-height: 1.6;
+        }
+        
+        .dashboard-container { 
+            max-width: 1200px; 
+            margin: auto; 
+            min-height: 90vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        h1 { 
+            font-size: 18px; 
+            letter-spacing: 6px; 
+            border-left: 4px solid var(--accent); 
+            padding-left: 20px; 
+            margin: 0; 
+            text-transform: uppercase; 
+            font-weight: 900;
+        }
+
+        .logout-btn { 
+            background: none; 
+            border: 1px solid #333; 
+            color: #666; 
+            padding: 8px 16px; 
+            cursor: pointer; 
+            font-size: 10px; 
+            font-weight: 900;
+            letter-spacing: 2px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .logout-btn:hover { 
+            background-color: #ffffff; 
+            color: #000000; 
+            border-color: #ffffff; 
+        }
+
+        .tab-menu { 
+            display: flex; 
+            gap: 30px; 
+            border-bottom: 1px solid var(--border); 
+            margin-bottom: 40px; 
+            overflow-x: auto; 
+            padding-bottom: 5px;
+        }
+        .tab-link { 
+            padding: 15px 10px; 
+            cursor: pointer; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--text-secondary); 
+            transition: 0.2s; 
+            white-space: nowrap; 
+        }
+        .tab-link.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+        .tab-link:hover { color: var(--accent); }
+        .count-badge { font-size: 10px; background: #111; padding: 3px 8px; border: 1px solid #222; margin-left: 8px; color: var(--accent); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
+        th { 
+            text-align: left; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: var(--text-secondary); 
+            padding: 20px 15px; 
+            border-bottom: 1px solid var(--border); 
+            letter-spacing: 1px;
+        }
+        .data-row { cursor: pointer; transition: 0.2s; border-bottom: 1px solid #111; }
+        .data-row:hover { background: #0a0a0a; }
+        td { 
+            padding: 25px 15px; 
+            font-size: 14px; 
+            color: #ccc; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+        }
+        
+        .action-cell { text-align: right; white-space: nowrap; }
+
+        .edit-icon { cursor: pointer; color: #555; margin-right: 20px; font-size: 16px; transition: 0.2s; }
+        .edit-icon:hover { color: var(--accent); }
+        
+        .btn-delete { color: var(--btn-ghost); cursor: pointer; font-size: 16px; opacity: 0.4; transition: 0.2s; }
+        .btn-delete:hover { color: #fff; opacity: 1; }
+
+        .switch { position: relative; display: inline-block; width: 36px; height: 18px; vertical-align: middle; margin-right: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 20px; transition: .3s; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: #444; border-radius: 50%; transition: .3s; }
+        input:checked + .slider { background: #fff; }
+        input:checked + .slider:before { transform: translateX(18px); background: #000; }
+
+        .detail-row { display: none; background: #050505; }
+        .detail-row td { 
+            white-space: normal; 
+            padding: 40px; 
+            color: #aaa; 
+            font-size: 14px; 
+            line-height: 1.8; 
+            border-bottom: 1px solid var(--border); 
+        }
+        .detail-content { border-left: 3px solid #333; padding-left: 30px; }
+
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: block; }
+
+        .modal { display: none; position: fixed; z-index: 999; inset: 0; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
+        .form-card { background: #080808; border: 1px solid #222; padding: 50px; width: 100%; max-width: 500px; }
+        .form-card h3 { font-size: 14px; letter-spacing: 3px; margin-bottom: 30px; text-align: center; }
+        input, textarea { background: #000; border: 1px solid #333; color: #fff; padding: 18px; margin-bottom: 25px; width: 100%; box-sizing: border-box; font-family: inherit; font-size: 13px; }
+        .action-btn { background: var(--accent); color: #000; border: none; padding: 18px; font-weight: 900; cursor: pointer; text-transform: uppercase; width: 100%; font-size: 12px; letter-spacing: 2px; transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="header-box">
+            <h1>LABORATORY TERMINAL</h1>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+
+        <div class="tab-menu">
+            <div class="tab-link active" onclick="openTab(event, 'all-sec')">Total <span class="count-badge" id="c0">0</span></div>
+            <div class="tab-link" onclick="openTab(event, 'ongoing-sec')">Ongoing <span class="count-badge" id="c1">0</span></div>
+            <div class="tab-link" onclick="openTab(event, 'lab-sec')">Lab Updates <span class="count-badge" id="c3">0</span></div>
+            <div class="tab-link" onclick="openTab(event, 'completed-sec')">Completed <span class="count-badge" id="c2">0</span></div>
+        </div>
+
+        <div id="all-sec" class="tab-content active"><table id="allTable"></table></div>
+        <div id="ongoing-sec" class="tab-content"><table id="ongoingTable"></table></div>
+        <div id="lab-sec" class="tab-content"><table id="labTable"></table></div>
+        <div id="completed-sec" class="tab-content"><table id="completedTable"></table></div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="form-card">
+            <h3>MODIFY ANALYSIS</h3>
+            <input type="hidden" id="editId">
+            <input type="text" id="editType" placeholder="Classification">
+            <textarea id="editDesc" rows="8"></textarea>
+            <button class="action-btn" onclick="saveEdit()">SAVE CHANGES</button>
+            <p onclick="closeModal()" style="text-align:center; font-size:10px; cursor:pointer; color:#555; margin-top:25px; letter-spacing:2px; text-transform:uppercase;">CANCEL</p>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'index.html';
+
+        async function loadData() {
+            try {
+                const pRes = await fetch('http://localhost:5000/api/police/all', { headers: { 'Authorization': `Bearer ${token}` }});
+                const police = await pRes.json();
+                const lRes = await fetch('http://localhost:5000/api/lab/all', { headers: { 'Authorization': `Bearer ${token}` }});
+                const lab = await lRes.json();
+
+                document.getElementById('c0').innerText = police.length;
+                document.getElementById('c1').innerText = police.filter(c => c.status === 'ongoing').length;
+                document.getElementById('c2').innerText = police.filter(c => c.status === 'completed').length;
+                document.getElementById('c3').innerText = lab.length;
+
+                renderTable('allTable', police);
+                renderTable('ongoingTable', police.filter(c => c.status === 'ongoing'));
+                renderTable('completedTable', police.filter(c => c.status === 'completed'));
+                renderTable('labTable', lab); 
+            } catch (err) { console.error(err); }
+        }
+
+        function renderTable(tableId, data) {
+            const table = document.getElementById(tableId);
+            if (!data || data.length === 0) {
+                table.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:100px; color:#333; font-size:11px; letter-spacing:2px;'>NO RECORDS FOUND</td></tr>";
+                return;
+            }
+
+            let html = `<thead><tr><th width="8%">#</th><th width="20%">Internal ID</th><th width="30%">Classification</th><th width="15%">Status</th><th width="27%" style="text-align:right">Actions</th></tr></thead><tbody>`;
+            
+            data.forEach((item, index) => {
+                const safeDesc = (item.description || '').replace(/'/g, "\\'");
+                html += `
+                <tr class="data-row" onclick="toggleDescription('${item.caseId}', '${tableId}')">
+                    <td style="font-family:monospace; color:#444;">${index + 1}</td>
+                    <td style="font-family:monospace; color:#fff; font-weight:600;">${item.caseId}</td>
+                    <td>${item.evidenceType}</td>
+                    <td><span style="font-size:10px; border:1px solid #333; padding:4px 8px; color:#888; border-radius:2px;">${item.status || 'Lab'}</span></td>
+                    <td class="action-cell" onclick="event.stopPropagation()">
+                        <span class="edit-icon" onclick="openEdit('${item.caseId}', '${item.evidenceType}', '${safeDesc}')">✎</span>
+                        <label class="switch">
+                            <input type="checkbox" ${item.status === 'completed' ? 'checked' : ''} onchange="toggleStatus('${item.caseId}', this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="btn-delete" onclick="deleteCase('${item.caseId}', ${tableId === 'labTable'})">🗑</span>
+                    </td>
+                </tr>
+                <tr id="detail-${tableId}-${item.caseId}" class="detail-row">
+                    <td colspan="5"><div class="detail-content">${item.description || 'N/A'}</div></td>
+                </tr>`;
+            });
+            table.innerHTML = html + "</tbody>";
+        }
+
+        function toggleDescription(id, tableId) {
+            const row = document.getElementById(`detail-${tableId}-${id}`);
+            row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
+        }
+
+        async function deleteCase(id, isLab) {
+            const route = isLab ? 'lab' : 'police';
+            if (confirm(`PURGE RECORD ${id}?`)) {
+                await fetch(`http://localhost:5000/api/${route}/delete/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
+                loadData();
+            }
+        }
+
+        async function toggleStatus(id, isChecked) {
+            await fetch(`http://localhost:5000/api/police/edit/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ status: isChecked ? 'completed' : 'ongoing' })
+            });
+            loadData();
+        }
+
+        function openEdit(id, type, desc) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editType').value = type;
+            document.getElementById('editDesc').value = desc;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        async function saveEdit() {
+            const id = document.getElementById('editId').value;
+            // Check if we are editing a Lab record or Police record based on existing logic
+            // Defaulting to police edit here, or you can add logic to determine source
+            await fetch(`http://localhost:5000/api/police/edit/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ evidenceType: document.getElementById('editType').value, description: document.getElementById('editDesc').value })
+            });
+            closeModal(); loadData();
+        }
+
+        function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+        
+        function openTab(evt, name) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            if(evt) evt.currentTarget.classList.add('active');
+        }
+
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+        loadData();
+    </script>
+</body>
+</html>
