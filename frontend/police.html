@@ -1,355 +1,851 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Police Terminal | Noir System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #000000;
-            --card-bg: #121212;
-            --border: #333333;
-            --text-primary: #ffffff;
-            --text-secondary: #888888;
-            --accent: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Police Dashboard | Forensic System</title>
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
 
-        body { 
-            background: var(--bg); 
-            color: var(--text-primary); 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            padding: 40px; 
-            line-height: 1.6;
-        }
-        
-        .dashboard-container { 
-            max-width: 1200px; 
-            margin: auto; 
-            min-height: 90vh; 
-            display: flex; 
-            flex-direction: column; 
-        }
-        
-        .header-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 50px;
-        }
+    :root {
+      --slate-950: #f4f6f9;         
+      --slate-900: #ffffff;         
+      --slate-850: #f8fafc;         
+      --slate-800: #edf2f7;         
+      --slate-750: #e2e8f0;         
+      --slate-700: #cbd5e1;         
+      --slate-400: #64748b;         
+      --slate-300: #475569;         
+      --slate-200: #334155;         
+      --slate-100: #1e293b;         
+      --slate-50:  #0f172a;         
+      --accent:    #2563eb;         
+      --accent-dim:#1d4ed8;
+      --amber:     #d97706;
+      --amber-light:#b45309;        
+      --teal:      #0d9488;
+      --teal-dim:  #0f766e;
+      --danger:    #e11d48;
+      --danger-dim:#be123c;
+      --success:   #16a34a;
+      --border:    rgba(0, 0, 0, 0.05);
+      --border-mid:rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.14);
+    }
 
-        h1 { 
-            font-size: 18px; 
-            letter-spacing: 6px; 
-            border-left: 4px solid var(--accent); 
-            padding-left: 20px; 
-            margin: 0; 
-            text-transform: uppercase; 
-            font-weight: 900;
-        }
+    html, body { height: 100%; }
 
-        .logout-btn { 
-            background: none; 
-            border: 1px solid #333; 
-            color: #666; 
-            padding: 8px 16px; 
-            cursor: pointer; 
-            font-size: 10px; 
-            font-weight: 900;
-            letter-spacing: 2px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-        }
+    body {
+      background: var(--slate-950);
+      display: flex;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: var(--slate-100);
+    }
 
-        .logout-btn:hover { 
-            background-color: #ffffff; 
-            color: #000000; 
-            border-color: #ffffff; 
-        }
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 248px;
+      background: var(--slate-900);
+      border-right: 1px solid var(--border-mid);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
 
-        .tab-menu { 
-            display: flex; 
-            gap: 30px; 
-            border-bottom: 1px solid #222; 
-            margin-bottom: 40px; 
-            overflow-x: auto; 
-            padding-bottom: 5px;
-        }
-        .tab-link { 
-            padding: 15px 10px; 
-            cursor: pointer; 
-            font-size: 11px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: var(--text-secondary); 
-            transition: 0.2s; 
-            white-space: nowrap; 
-        }
-        .tab-link.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
-        .tab-link:hover { color: var(--accent); }
-        .count-badge { font-size: 10px; background: #111; padding: 3px 8px; border: 1px solid #222; border-radius: 4px; margin-left: 8px; color: var(--accent); }
+    .sidebar-head {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--border-mid);
+    }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; table-layout: fixed; }
-        th { 
-            text-align: left; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            color: var(--text-secondary); 
-            padding: 20px 15px; 
-            border-bottom: 1px solid #222; 
-            letter-spacing: 1px;
-        }
-        .data-row { cursor: pointer; transition: 0.2s; border-bottom: 1px solid #111; }
-        .data-row:hover { background: #0a0a0a; }
-        td { 
-            padding: 25px 15px; 
-            font-size: 14px; 
-            color: #ccc; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            white-space: nowrap; 
-        }
-        
-        .action-cell { text-align: right; white-space: nowrap; }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
 
-        .edit-icon { cursor: pointer; color: #555; margin-right: 20px; font-size: 16px; transition: 0.2s; }
-        .edit-icon:hover { color: var(--accent); }
-        
-        .btn-delete { color: #bbbbbb; cursor: pointer; font-size: 16px; opacity: 0.4; transition: 0.2s; }
-        .btn-delete:hover { color: #fff; opacity: 1; }
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--slate-850);
+      border: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .switch { position: relative; display: inline-block; width: 36px; height: 18px; vertical-align: middle; margin-right: 20px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background: #222; border-radius: 20px; transition: .3s; }
-        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background: #444; border-radius: 50%; transition: .3s; }
-        input:checked + .slider { background: #fff; }
-        input:checked + .slider:before { transform: translateX(18px); background: #000; }
+    .logo-icon svg {
+      width: 16px; height: 16px;
+      stroke: var(--accent); fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
 
-        .detail-row { display: none; background: #050505; }
-        .detail-row td { 
-            white-space: normal; 
-            padding: 40px; 
-            color: #aaa; 
-            font-size: 14px; 
-            line-height: 1.8; 
-            border-bottom: 1px solid #222; 
-        }
-        .detail-content { border-left: 3px solid #333; padding-left: 30px; }
+    .logo-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-100);
+      letter-spacing: 0.01em;
+    }
 
-        .tab-content { display: none; width: 100%; }
-        .tab-content.active { display: block; }
+    .logo-sub {
+      font-size: 10.5px;
+      color: var(--slate-400);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-left: 42px;
+    }
 
-        /* --- BORDERLESS REGISTER CASE BOX --- */
-        .form-card { 
-            background: var(--card-bg); 
-            border: none; 
-            padding: 50px; 
-            width: 100%; 
-            max-width: 500px; 
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 1px rgba(255,255,255,0.1);
-        }
-        .form-card h3 { font-size: 14px; letter-spacing: 3px; margin-bottom: 35px; text-align: center; font-weight: 600; color: #eee; }
-        
-        input, textarea { 
-            background: #1a1a1a; 
-            border: 1px solid #333; 
-            color: #fff; 
-            padding: 16px; 
-            margin-bottom: 20px; 
-            width: 100%; 
-            box-sizing: border-box; 
-            font-family: inherit; 
-            font-size: 13px; 
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, textarea:focus { 
-            border-color: #666; 
-            outline: none; 
-            background: #1f1f1f; 
-        }
-        
-        .action-btn { 
-            background: var(--accent); color: #000; border: none; 
-            padding: 18px; font-weight: 800; cursor: pointer; 
-            text-transform: uppercase; width: 100%; font-size: 12px; 
-            letter-spacing: 2px; border-radius: 8px;
-            transition: 0.2s; 
-            margin-top: 10px;
-        }
-        .action-btn:hover { background: #e0e0e0; }
+    .sidebar-section {
+      padding: 18px 14px 8px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .modal { display: none; position: fixed; z-index: 999; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-    </style>
+    .section-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .menu-btn {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--slate-300);
+      margin-bottom: 2px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background 0.18s, color 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-btn svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0; opacity: 0.7;
+    }
+
+    .menu-btn:hover {
+      background: var(--slate-850);
+      color: var(--slate-100);
+    }
+
+    .menu-btn.active {
+      background: var(--slate-800);
+      color: var(--slate-100);
+      border: 1px solid var(--border-mid);
+    }
+
+    .menu-btn.active svg { opacity: 1; stroke: var(--accent); }
+
+    .sidebar-footer {
+      padding: 14px;
+      border-top: 1px solid var(--border-mid);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid rgba(225, 29, 72, 0.2);
+      border-radius: 9px;
+      background: rgba(225, 29, 72, 0.05);
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.18s;
+    }
+
+    .logout-btn:hover { background: rgba(225, 29, 72, 0.1); }
+
+    .logout-btn svg {
+      width: 15px; height: 15px;
+      stroke: var(--danger); fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      background: var(--slate-900);
+      border-bottom: 1px solid var(--border-mid);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-left h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--slate-100);
+    }
+
+    .topbar-left p {
+      font-size: 12px;
+      color: var(--slate-400);
+      margin-top: 2px;
+    }
+
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      border-radius: 6px;
+      padding: 5px 12px;
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+    }
+
+    /* ── VIEWS ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── DASHBOARD WELCOME ── */
+    .welcome-banner {
+      background: var(--slate-900);
+      border: 1px solid var(--border-mid);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .welcome-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--slate-850);
+      border: 1px solid var(--border-mid);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .welcome-icon svg {
+      width: 22px; height: 22px;
+      stroke: var(--accent); fill: none;
+      stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .welcome-text h2 {
+      font-size: 17px; font-weight: 700; color: var(--slate-100); margin-bottom: 6px;
+    }
+
+    .welcome-text p {
+      font-size: 13.5px; color: var(--slate-300); line-height: 1.7;
+    }
+
+    /* ── CONTAINER PANELS ── */
+    .panel-card {
+      background: var(--slate-900);
+      border: 1px solid var(--border-mid);
+      border-radius: 14px;
+      padding: 28px 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .panel-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--slate-100);
+      margin-bottom: 20px;
+    }
+
+    /* ── FORM ELEMENTS ── */
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 13px 15px;
+      background: var(--slate-800);
+      border: 1px solid var(--border-mid);
+      border-radius: 9px;
+      color: var(--slate-100);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 16px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    input[type="text"]::placeholder, textarea::placeholder { color: var(--slate-400); }
+    input[type="text"]:focus, textarea:focus { border-color: var(--accent); background: #ffffff; }
+
+    /* ── CASE CARDS ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-100);
+    }
+
+    .count-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--slate-300);
+      background: var(--slate-800);
+      border: 1px solid var(--border-mid);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .case-card {
+      background: var(--slate-900);
+      border: 1px solid var(--border-mid);
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .case-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .case-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .case-id {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--slate-100);
+      letter-spacing: 0.01em;
+    }
+
+    .status-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 6px;
+      padding: 4px 11px;
+      white-space: nowrap;
+    }
+
+    .status-ongoing   { background: rgba(217, 119, 6, 0.08); color: var(--amber-light); border: 1px solid rgba(217, 119, 6, 0.2); }
+    .status-completed { background: rgba(22, 163, 74, 0.08); color: var(--success); border: 1px solid rgba(22, 163, 74, 0.2); }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    .field-block {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label svg {
+      width: 12px; height: 12px;
+      stroke: var(--slate-400); fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .readonly-box {
+      background: var(--slate-850);
+      border: 1px solid var(--border-mid);
+      border-radius: 9px;
+      padding: 13px 15px;
+      font-size: 13.5px;
+      color: var(--slate-200);
+      line-height: 1.6;
+    }
+
+    .readonly-box.highlight {
+      border-left: 3px solid var(--teal);
+      font-weight: 600;
+      color: var(--slate-100);
+    }
+
+    /* ── ACTION INTERFACES ── */
+    .case-card-footer {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-mid);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-action-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-action-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .toggle-action-row span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-200);
+    }
+
+    .primary-btn {
+      padding: 11px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      transition: background 0.18s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .primary-btn svg {
+      width: 14px; height: 14px;
+      stroke: #fff; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .primary-btn:hover { background: var(--accent-dim); }
+    .primary-btn:active { transform: scale(0.98); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      background: var(--slate-900);
+      border: 1px dashed var(--border-strong);
+      border-radius: 14px;
+      padding: 52px 30px;
+      text-align: center;
+    }
+
+    .empty-state svg {
+      width: 36px; height: 36px;
+      stroke: var(--slate-400); fill: none;
+      stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+      margin-bottom: 14px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--slate-400);
+    }
+
+    /* ── RESPONSIVE RESPONSIVENESS ── */
+    @media (max-width: 900px) {
+      body { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; padding: 16px 16px 0; }
+      .sidebar-head { border-bottom: none; border-right: 1px solid var(--border-mid); padding: 0 18px 0 0; margin-right: 18px; }
+      .sidebar-section { flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 8px 0; flex: 1; }
+      .section-label { display: none; }
+      .sidebar-footer { padding: 8px 0; width: 100%; border-top: none; }
+      .main { min-height: 0; }
+      .content { padding: 20px 18px; }
+      .topbar { padding: 16px 18px; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <div class="header-box">
-            <h1>POLICE TERMINAL</h1>
-            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-head">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <span class="logo-name">ForenSys</span>
+    </div>
+    <div class="logo-sub">Police Module</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="section-label">Navigation</div>
+    <button class="menu-btn active" onclick="showView('dashboardView', this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="menu-btn" onclick="showView('addCaseView', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Add Case
+    </button>
+    <button class="menu-btn" onclick="showView('allCasesView', this)">
+      <svg viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+      All Cases
+    </button>
+    <button class="menu-btn" onclick="showView('ongoingView', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Ongoing Cases
+    </button>
+    <button class="menu-btn" onclick="showView('completedView', this)">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Completed Cases
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()">
+      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Logout
+    </button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Police Dashboard</h1>
+      <p>Forensic Case Tracking System</p>
+    </div>
+    <div class="topbar-badge">
+      <span class="status-dot"></span>
+      Police Officer
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboardView" class="view active">
+      <div class="welcome-banner">
+        <div class="welcome-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 100 10 5 5 0 000-10zM20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/></svg>
         </div>
-
-        <div class="tab-menu">
-            <div class="tab-link active" onclick="openTab(event, 'all-sec')">Total <span class="count-badge" id="c0">0</span></div>
-            <div class="tab-link" onclick="openTab(event, 'ongoing-sec')">Ongoing <span class="count-badge" id="c1">0</span></div>
-            <div class="tab-link" onclick="openTab(event, 'lab-sec')">Lab Updates <span class="count-badge" id="c3">0</span></div>
-            <div class="tab-link" onclick="openTab(event, 'completed-sec')">Completed <span class="count-badge" id="c2">0</span></div>
-            <div class="tab-link" onclick="openTab(event, 'add-sec')">+ NEW RECORD</div>
+        <div class="welcome-text">
+          <h2>Welcome Officer</h2>
+          <p>Log physical findings, request advanced biological analytics, and track diagnostic lab metrics securely using the cross-agency communication interface terminal panel framework.</p>
         </div>
+      </div>
+    </div>
 
-        <div id="all-sec" class="tab-content active"><table id="allTable"></table></div>
-        <div id="ongoing-sec" class="tab-content"><table id="ongoingTable"></table></div>
-        <div id="lab-sec" class="tab-content"><table id="labTable"></table></div>
-        <div id="completed-sec" class="tab-content"><table id="completedTable"></table></div>
+    <!-- ADD CASE VIEW -->
+    <div id="addCaseView" class="view">
+      <div class="panel-card">
+        <h3>Create New Forensic Case File</h3>
+        <input type="text" id="evidenceType" placeholder="Evidence Type (e.g. DNA, Fingerprint, Firearm)">
+        <textarea id="policeDescription" placeholder="Provide detailed operational descriptions and situational field notes for forensic evaluation..."></textarea>
+        <button class="primary-btn" onclick="createCase()">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Create Case
+        </button>
+      </div>
+    </div>
 
-        <div id="add-sec" class="tab-content">
-            <!-- Padding nudged up slightly from 50px to 20px -->
-            <div style="display: flex; justify-content: center; padding-top: 20px;">
-                <div class="form-card">
-                    <h3>REGISTER CASE</h3>
-                    <input type="text" id="newCaseId" placeholder="INTERNAL ID">
-                    <input type="text" id="newType" placeholder="CLASSIFICATION">
-                    <textarea id="newDesc" rows="6" placeholder="OFFICIAL DESCRIPTION"></textarea>
-                    <button class="action-btn" onclick="submitCase()">REGISTER CASE</button>
-                </div>
+    <!-- ALL CASES VIEW -->
+    <div id="allCasesView" class="view">
+      <div class="section-header">
+        <h2>All Logged Records</h2>
+        <span class="count-badge" id="allCount">0 total</span>
+      </div>
+      <div id="allCases"></div>
+    </div>
+
+    <!-- ONGOING VIEW -->
+    <div id="ongoingView" class="view">
+      <div class="section-header">
+        <h2>Active Investigations</h2>
+        <span class="count-badge" id="ongoingCount">0 active</span>
+      </div>
+      <div id="ongoingCases"></div>
+    </div>
+
+    <!-- COMPLETED VIEW -->
+    <div id="completedView" class="view">
+      <div class="section-header">
+        <h2>Closed & Completed Diagnostics</h2>
+        <span class="count-badge" id="completedCount">0 resolved</span>
+      </div>
+      <div id="completedCases"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:5000/api";
+const token = localStorage.getItem("token");
+
+if(!token){
+  window.location = "auth.html";
+}
+
+function logout(){
+  localStorage.clear();
+  window.location = "auth.html";
+}
+
+function showView(id, btn){
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".menu-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+async function createCase(){
+  const evidenceType = document.getElementById("evidenceType").value.trim();
+  const policeDescription = document.getElementById("policeDescription").value.trim();
+
+  if(!evidenceType || !policeDescription){
+    alert("Please complete all case reporting fields.");
+    return;
+  }
+
+  try {
+    await fetch(`${API}/cases`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify({ evidenceType, policeDescription })
+    });
+
+    alert("Case Logged and Transmitted to Forensic Lab Panel Successfully.");
+    document.getElementById("evidenceType").value = "";
+    document.getElementById("policeDescription").value = "";
+    loadCases();
+  } catch(err) {
+    console.error(err);
+  }
+}
+
+async function loadCases(){
+  try {
+    const response = await fetch(`${API}/cases`, {
+      headers: { Authorization: token }
+    });
+    const cases = await response.json();
+
+    const allDiv = document.getElementById("allCases");
+    const ongoingDiv = document.getElementById("ongoingCases");
+    const completedDiv = document.getElementById("completedCases");
+
+    allDiv.innerHTML = "";
+    ongoingDiv.innerHTML = "";
+    completedDiv.innerHTML = "";
+
+    let ongoingCount = 0;
+    let completedCount = 0;
+
+    document.getElementById("allCount").textContent = `${cases.length} record${cases.length !== 1 ? 's' : ''}`;
+
+    if(cases.length === 0){
+      const emptyHtml = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+          <p>No operational diagnostic records found inside your tracking logs.</p>
+        </div>`;
+      allDiv.innerHTML = emptyHtml;
+      ongoingDiv.innerHTML = emptyHtml;
+      completedDiv.innerHTML = emptyHtml;
+      document.getElementById("ongoingCount").textContent = "0 active";
+      document.getElementById("completedCount").textContent = "0 resolved";
+      return;
+    }
+
+    cases.forEach(c => {
+      const isCompleted = c.status === "completed";
+      const statusClass = isCompleted ? "status-completed" : "status-ongoing";
+      const displayStatus = isCompleted ? "Completed" : "Ongoing";
+
+      if(!isCompleted) ongoingCount++;
+      if(isCompleted) completedCount++;
+
+      const html = `
+        <div class="case-card">
+          <div class="case-card-header">
+            <span class="case-id">${c.caseId}</span>
+            <span class="status-pill ${statusClass}">${displayStatus}</span>
+          </div>
+
+          <div class="info-grid">
+            <div class="field-block">
+              <div class="field-label">
+                <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+                Evidence Category
+              </div>
+              <div class="readonly-box" style="font-weight:600; color:var(--slate-50);">${c.evidenceType}</div>
             </div>
-        </div>
-    </div>
 
-    <div id="editModal" class="modal">
-        <div class="form-card">
-            <h3>MODIFY RECORD</h3>
-            <input type="hidden" id="editId">
-            <input type="text" id="editType" placeholder="Classification">
-            <textarea id="editDesc" rows="8"></textarea>
-            <button class="action-btn" onclick="saveEdit()">SAVE CHANGES</button>
-            <p onclick="closeModal()" style="text-align:center; font-size:10px; cursor:pointer; color:#555; margin-top:25px; letter-spacing:2px; text-transform:uppercase;">CANCEL</p>
-        </div>
-    </div>
+            <div class="field-block">
+              <div class="field-label">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                Active Field Operational Notes
+              </div>
+              <textarea id="desc-${c._id}" placeholder="Modify field summary or operational description logs...">${c.policeDescription}</textarea>
+            </div>
 
-    <script>
-        const token = localStorage.getItem('token');
-        if (!token) window.location.href = 'index.html';
+            <div class="field-block">
+              <div class="field-label" style="color: var(--teal);">
+                <svg viewBox="0 0 24 24" style="stroke: var(--teal);"><path d="M19.428 15.428a2 2 0 0 0-1.022-.547l-2.387-.477a6 6 0 0 0-3.86.517l-.318.158a6 6 0 0 1-3.86.517L6.05 15.21a2 2 0 0 0-1.806.547"/></svg>
+                Laboratory Forensic Return Analysis Report
+              </div>
+              <div class="readonly-box highlight">${c.labReport || "Analysis Pending Laboratory Review Process..."}</div>
+            </div>
+          </div>
 
-        async function loadData() {
-            try {
-                const pRes = await fetch('http://localhost:5000/api/police/all', { headers: { 'Authorization': `Bearer ${token}` }});
-                const police = await pRes.json();
-                const lRes = await fetch('http://localhost:5000/api/lab/all', { headers: { 'Authorization': `Bearer ${token}` }});
-                const lab = await lRes.json();
+          <div class="case-card-footer">
+            <div class="toggle-action-row" onclick="event.preventDefault(); toggleStatus('${c._id}', ${!isCompleted})">
+              <input type="checkbox" ${isCompleted ? "checked" : ""}>
+              <span>Mark Investigation Completed</span>
+            </div>
 
-                document.getElementById('c0').innerText = police.length;
-                document.getElementById('c1').innerText = police.filter(c => c.status === 'ongoing').length;
-                document.getElementById('c2').innerText = police.filter(c => c.status === 'completed').length;
-                document.getElementById('c3').innerText = lab.length;
+            <button class="primary-btn" onclick="updateDescription('${c._id}')">
+              <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+              Update Log Narrative
+            </button>
+          </div>
+        </div>`;
 
-                renderTable('allTable', police);
-                renderTable('ongoingTable', police.filter(c => c.status === 'ongoing'));
-                renderTable('completedTable', police.filter(c => c.status === 'completed'));
-                renderTable('labTable', lab); 
-            } catch (err) { console.error(err); }
-        }
+      allDiv.innerHTML += html;
+      if(!isCompleted) ongoingDiv.innerHTML += html;
+      if(isCompleted) completedDiv.innerHTML += html;
+    });
 
-        function renderTable(tableId, data) {
-            const table = document.getElementById(tableId);
-            if (!data || data.length === 0) {
-                table.innerHTML = "<tr><td colspan='5' style='text-align:center; padding:100px; color:#333; font-size:11px; letter-spacing:2px;'>NO RECORDS FOUND</td></tr>";
-                return;
-            }
+    document.getElementById("ongoingCount").textContent = `${ongoingCount} active`;
+    document.getElementById("completedCount").textContent = `${completedCount} resolved`;
 
-            let html = `<thead><tr><th width="8%">#</th><th width="20%">Internal ID</th><th width="30%">Classification</th><th width="15%">Status</th><th width="27%" style="text-align:right">Actions</th></tr></thead><tbody>`;
-            
-            data.forEach((item, index) => {
-                const safeDesc = (item.description || '').replace(/'/g, "\\'");
-                html += `
-                <tr class="data-row" onclick="toggleDescription('${item.caseId}', '${tableId}')">
-                    <td style="font-family:monospace; color:#444;">${index + 1}</td>
-                    <td style="font-family:monospace; color:#fff; font-weight:600;">${item.caseId}</td>
-                    <td>${item.evidenceType}</td>
-                    <td><span style="font-size:10px; border:1px solid #333; padding:4px 8px; color:#888; border-radius:2px;">${item.status || 'Lab'}</span></td>
-                    <td class="action-cell" onclick="event.stopPropagation()">
-                        <span class="edit-icon" onclick="openEdit('${item.caseId}', '${item.evidenceType}', '${safeDesc}')">✎</span>
-                        <label class="switch">
-                            <input type="checkbox" ${item.status === 'completed' ? 'checked' : ''} onchange="toggleStatus('${item.caseId}', this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                        <span class="btn-delete" onclick="deleteCase('${item.caseId}')">🗑</span>
-                    </td>
-                </tr>
-                <tr id="detail-${tableId}-${item.caseId}" class="detail-row">
-                    <td colspan="5"><div class="detail-content">${item.description || 'N/A'}</div></td>
-                </tr>`;
-            });
-            table.innerHTML = html + "</tbody>";
-        }
+    // Inner check to apply fallback states inside filtered panels
+    if(ongoingCount === 0) {
+      ongoingDiv.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M9 12h6"/></svg><p>No active case files are flagged as ongoing.</p></div>`;
+    }
+    if(completedCount === 0) {
+      completedDiv.innerHTML = `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M9 12h6"/></svg><p>No forensic logs are flagged as completed.</p></div>`;
+    }
 
-        function toggleDescription(id, tableId) {
-            const row = document.getElementById(`detail-${tableId}-${id}`);
-            row.style.display = row.style.display === 'table-row' ? 'none' : 'table-row';
-        }
+  } catch(err) {
+    console.error("Dashboard error loading records:", err);
+  }
+}
 
-        async function deleteCase(id) {
-            if (confirm(`DELETE CASE ${id}?`)) {
-                await fetch(`http://localhost:5000/api/police/delete/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
-                loadData();
-            }
-        }
+async function updateDescription(id){
+  const policeDescription = document.getElementById(`desc-${id}`).value.trim();
 
-        async function toggleStatus(id, isChecked) {
-            await fetch(`http://localhost:5000/api/police/edit/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ status: isChecked ? 'completed' : 'ongoing' })
-            });
-            loadData();
-        }
+  if(!policeDescription) {
+    alert("Description narrative cannot be saved blank.");
+    return;
+  }
 
-        async function submitCase() {
-            const id = document.getElementById('newCaseId').value;
-            if(!id) return;
-            await fetch('http://localhost:5000/api/police/add', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ caseId: id, evidenceType: document.getElementById('newType').value, description: document.getElementById('newDesc').value })
-            });
-            loadData();
-            openTab(null, 'all-sec');
-        }
+  try {
+    await fetch(`${API}/cases/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify({ policeDescription })
+    });
 
-        function openEdit(id, type, desc) {
-            document.getElementById('editId').value = id;
-            document.getElementById('editType').value = type;
-            document.getElementById('editDesc').value = desc;
-            document.getElementById('editModal').style.display = 'flex';
-        }
+    alert("Operational Case Notes Updated Successfully.");
+    loadCases();
+  } catch(err) {
+    console.error(err);
+  }
+}
 
-        async function saveEdit() {
-            const id = document.getElementById('editId').value;
-            await fetch(`http://localhost:5000/api/police/edit/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ evidenceType: document.getElementById('editType').value, description: document.getElementById('editDesc').value })
-            });
-            closeModal(); loadData();
-        }
+async function toggleStatus(id, checked){
+  const status = checked ? "completed" : "ongoing";
 
-        function closeModal() { document.getElementById('editModal').style.display = 'none'; }
-        
-        function openTab(evt, name) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(name).classList.add('active');
-            if(evt) evt.currentTarget.classList.add('active');
-        }
+  try {
+    await fetch(`${API}/cases/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify({ status })
+    });
+    loadCases();
+  } catch(err) {
+    console.error(err);
+  }
+}
 
-        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
-        loadData();
-    </script>
+// Initializing Database Read Loops
+loadCases();
+</script>
 </body>
-</html>
+</html> 
